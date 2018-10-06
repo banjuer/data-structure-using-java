@@ -3,13 +3,13 @@ package list;
 import util.SysUtil;
 
 /**
- * @author : banjuer@outlook.com
+ * @author : guochengsen@outlook.com
  * @date :
  */
-public class ArrayListTest {
+public class LinkedListTest {
 
     public static void main(String[] args) {
-        List<Integer> list = new ArrayList<>();
+        List<Integer> list = new LinkedList<>();
         for (int i = 0; i < 100; i++) {
             list.add(i);
         }
@@ -18,7 +18,7 @@ public class ArrayListTest {
         for (int i = 0; i < 100; i++) {
             list.remove(0);
         }
-        SysUtil.print(list);
+        SysUtil.print(list.toString());
         SysUtil.print(list.isEmpty());
     }
 

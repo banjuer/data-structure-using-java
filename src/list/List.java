@@ -26,6 +26,8 @@ public interface List<E> {
 
     E getLast();
 
+    int size();
+
     boolean isEmpty();
 
 }
