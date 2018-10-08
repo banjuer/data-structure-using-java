@@ -174,17 +174,17 @@ public class LinkedList<E> implements List<E> {
     @Override
     public E get(int index) {
         Node carry = getNode(index);
-        return carry == null ? null : (E)carry.data;
+        return carry == null ? null : carry.data;
     }
 
     @Override
     public E getFirst() {
-        return (E)dumyHead.next.data;
+        return dumyHead.next.data;
     }
 
     @Override
     public E getLast() {
-        return (E)dumyTail.prev.data;
+        return dumyTail.prev.data;
     }
 
     @Override
