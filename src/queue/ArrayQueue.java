@@ -4,7 +4,6 @@ package queue;
  * @author : guochengsen@outlook.com
  * @date :
  *
- * TODO this will implementing by using loop array
  */
 public class ArrayQueue<E> implements Queue<E> {
 
