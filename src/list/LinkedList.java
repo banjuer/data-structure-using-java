@@ -206,7 +206,7 @@ public class LinkedList<E> implements List<E> {
             cur = cur.next;
             sb.append(cur.data);
             if (i != size - 1)
-                sb.append(", ");
+                sb.append("->");
         }
         sb.append("], size = ");
         sb.append(size);

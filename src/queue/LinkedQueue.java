@@ -47,7 +47,7 @@ public class LinkedQueue<E> implements Queue<E> {
         for (int i = 0; i < s; i++) {
             sb.append(queue.get(i));
             if (i != s - 1)
-                sb.append(", ");
+                sb.append("->");
         }
         sb.append("], size = ").append(s).append('}');
         return sb.toString();
