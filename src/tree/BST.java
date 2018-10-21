@@ -3,10 +3,10 @@ package tree;
 import queue.Queue;
 
 /**
- * @author : guochengsen@dongao.com
+ * @author : guochengsen
  * @date :
  */
-public class BST<E extends Comparable<E>> implements Tree {
+public class BST<E extends Comparable<E>> implements Tree<E> {
 
     private Node root;
 
@@ -43,12 +43,12 @@ public class BST<E extends Comparable<E>> implements Tree {
     }
 
     @Override
-    public void add(Comparable comparable) {
+    public void add(E e) {
 
     }
 
     @Override
-    public void delete(Comparable comparable) {
+    public void delete(E e) {
 
     }
 
@@ -63,8 +63,38 @@ public class BST<E extends Comparable<E>> implements Tree {
     }
 
     @Override
-    public boolean contains(Comparable comparable) {
+    public boolean contains(E e) {
         return false;
+    }
+
+    @Override
+    public E max() {
+        return null;
+    }
+
+    @Override
+    public E min() {
+        return null;
+    }
+
+    @Override
+    public E floor(E e) {
+        return null;
+    }
+
+    @Override
+    public E ceil(E e) {
+        return null;
+    }
+
+    @Override
+    public E rank(E e) {
+        return null;
+    }
+
+    @Override
+    public E select(int rank) {
+        return null;
     }
 
     @Override
@@ -92,33 +122,4 @@ public class BST<E extends Comparable<E>> implements Tree {
 
     }
 
-    @Override
-    public Comparable max() {
-        return null;
-    }
-
-    @Override
-    public Comparable min() {
-        return null;
-    }
-
-    @Override
-    public Comparable floor(Comparable comparable) {
-        return null;
-    }
-
-    @Override
-    public Comparable ceil(Comparable comparable) {
-        return null;
-    }
-
-    @Override
-    public Comparable rank(Comparable comparable) {
-        return null;
-    }
-
-    @Override
-    public Comparable select(int rank) {
-        return null;
-    }
 }
