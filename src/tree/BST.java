@@ -12,7 +12,7 @@ public class BST<E extends Comparable<E>> implements Tree<E> {
 
     private int size;
 
-    private class Node implements TreeNode {
+    private class Node implements VisibleNode {
         E e;
         Node left;
         Node right;
@@ -21,30 +21,51 @@ public class BST<E extends Comparable<E>> implements Tree<E> {
         }
 
         @Override
-        public TreeNode leftChild() {
+        public VisibleNode left() {
             return left;
         }
 
         @Override
-        public TreeNode rightChild() {
+        public VisibleNode right() {
             return right;
         }
 
         @Override
+        public String text() {
+            return toString();
+        }
+
+        @Override
         public String toString() {
-            return '[' + e.toString() + ']';
+            return e.toString();
         }
 
     }
 
     @Override
-    public TreeNode root() {
+    public VisibleNode root() {
         return root;
     }
 
     @Override
     public void add(E e) {
+        root = add(root, e);
+    }
 
+    /**
+     * 向树中添加节点, 返回添加节点后的树
+     * @param node
+     * @param e
+     * @return node
+     */
+    private Node add(Node node, E e) {
+        if (node == null)
+            return new Node(e);
+        if (e.compareTo(node.e) < 0)
+            node.left = add(node.left, e);
+        else if (e.compareTo(node.e) > 0)
+            node.right = add(node.right, e);
+        return node;
     }
 
     @Override
@@ -65,6 +86,23 @@ public class BST<E extends Comparable<E>> implements Tree<E> {
     @Override
     public boolean contains(E e) {
         return false;
+    }
+
+    /**
+     * 检查树中是否包含元素
+     * @param node
+     * @param e
+     * @return
+     */
+    private boolean contains(Node node, E e) {
+        if (node == null)
+            return false;
+        if (e.compareTo(node.e) < 0)
+            return contains(node.left, e);
+        else if (e.compareTo(node.e) > 0)
+            return contains(node.right, e);
+        else
+            return true;
     }
 
     @Override

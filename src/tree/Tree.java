@@ -7,7 +7,7 @@ import queue.Queue;
  */
 public interface Tree<E extends Comparable<E>> {
 
-    TreeNode root();
+    VisibleNode root();
 
     void add(E e);
 

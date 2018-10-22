@@ -1,10 +1,8 @@
 package util;
 
-import tree.TreeNode;
+import tree.VisibleNode;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author : guochengsen
@@ -12,112 +10,116 @@ import java.util.Map;
  */
 public class TreeUtil {
 
-    public static void pirnt(TreeNode root) {
-        // 找到左边的最大偏移量
-        int maxLeftOffset = findMaxOffset(root, 0, true);
-        int maxRightOffset = findMaxOffset(root, 0, false);
-        int offset = Math.max(maxLeftOffset, maxRightOffset);
-        // 计算最大偏移量
-        Map<Integer, PrintLine> lineMap = new HashMap();
-        calculateLines(root, offset, lineMap, 0, true);
-        Iterator<Integer> lineNumbers = lineMap.keySet().iterator();
-        int maxLine = 0;
-        while (lineNumbers.hasNext()) {
-            int lineNumber = lineNumbers.next();
-            if (lineNumber > maxLine) {
-                maxLine = lineNumber;
-            }
-        }
-        for (int i = 0; i <= maxLine; i++) {
-            PrintLine line = lineMap.get(i);
-            if (line != null) {
-                System.out.println(line.getLineString());
-            }
-        }
-
-    }
-
-    private static void calculateLines(TreeNode parent, int offset, Map<Integer, PrintLine> lineMap, int level,
-                                       boolean right) {
-        if (parent == null) {
-            return;
-        }
-        int nameoffset = parent.toString().length() / 2;
-        PrintLine line = lineMap.get(level);
-        if (line == null) {
-            line = new PrintLine();
-            lineMap.put(level, line);
-        }
-        line.putString(right ? offset : (offset - nameoffset), parent.toString());
-        // 判断有没有下一级
-        if (parent.leftChild() == null && parent.rightChild() == null) {
-            return;
-        }
-        // 如果有，添加分割线即/\
-        PrintLine separateLine = lineMap.get(level + 1);
-        if (separateLine == null) {
-            separateLine = new PrintLine();
-            lineMap.put(level + 1, separateLine);
-        }
-        if (parent.leftChild() != null) {
-            separateLine.putString(offset - 1, "/");
-            calculateLines(parent.leftChild(), offset - nameoffset - 1, lineMap, level + 2, false);
-        }
-        if (parent.rightChild() != null) {
-            separateLine.putString(offset + nameoffset + 1, "\\");
-            calculateLines(parent.rightChild(), offset + nameoffset + 1, lineMap, level + 2, true);
-        }
-
-    }
-
     /**
-     * 需要打印的某一行
+     * Print a tree
      *
-     * @author guochengsen
-     *
+     * @param root
+     *            tree root node
      */
-    private static class PrintLine {
-        /**
-         * 记录了offset和String的map
-         */
-        Map<Integer, String> printItemsMap = new HashMap<>();
-        int maxOffset = 0;
+    public static void print(VisibleNode root)
+    {
+        List<List<String>> lines = new ArrayList<>();
 
-        public void putString(int offset, String info) {
-            printItemsMap.put(offset, info);
-            if (offset > maxOffset) {
-                maxOffset = offset;
-            }
-        }
+        List<VisibleNode> level = new ArrayList<>();
+        List<VisibleNode> next = new ArrayList<>();
 
-        public String getLineString() {
-            StringBuffer buffer = new StringBuffer();
-            for (int i = 0; i <= maxOffset; i++) {
-                String info = printItemsMap.get(i);
-                if (info == null) {
-                    buffer.append(" ");
+        level.add(root);
+        int nn = 1;
+
+        int widest = 0;
+
+        while (nn != 0) {
+            List<String> line = new ArrayList<>();
+
+            nn = 0;
+
+            for (VisibleNode n : level) {
+                if (n == null) {
+                    line.add(null);
+
+                    next.add(null);
+                    next.add(null);
                 } else {
-                    buffer.append(info);
-                    i += info.length();
+                    String aa = n.text();
+                    line.add(aa);
+                    if (aa.length() > widest) widest = aa.length();
+
+                    next.add(n.left());
+                    next.add(n.right());
+
+                    if (n.left() != null) nn++;
+                    if (n.right() != null) nn++;
                 }
             }
-            return buffer.toString();
+
+            if (widest % 2 == 1) widest++;
+
+            lines.add(line);
+
+            List<VisibleNode> tmp = level;
+            level = next;
+            next = tmp;
+            next.clear();
         }
 
+        int perpiece = lines.get(lines.size() - 1).size() * (widest + 4);
+        for (int i = 0; i < lines.size(); i++) {
+            List<String> line = lines.get(i);
+            int hpw = (int) Math.floor(perpiece / 2f) - 1;
+
+            if (i > 0) {
+                for (int j = 0; j < line.size(); j++) {
+
+                    // split node
+                    char c = ' ';
+                    if (j % 2 == 1) {
+                        if (line.get(j - 1) != null) {
+                            c = (line.get(j) != null) ? '┴' : '┘';
+                        } else {
+                            if (line.get(j) != null) c = '└';
+                        }
+                    }
+                    System.out.print(c);
+
+                    // lines and spaces
+                    if (line.get(j) == null) {
+                        for (int k = 0; k < perpiece - 1; k++) {
+                            System.out.print(" ");
+                        }
+                    } else {
+
+                        for (int k = 0; k < hpw; k++) {
+                            System.out.print(j % 2 == 0 ? " " : "─");
+                        }
+                        System.out.print(j % 2 == 0 ? "┌" : "┐");
+                        for (int k = 0; k < hpw; k++) {
+                            System.out.print(j % 2 == 0 ? "─" : " ");
+                        }
+                    }
+                }
+                System.out.println();
+            }
+
+            // print line of numbers
+            for (int j = 0; j < line.size(); j++) {
+
+                String f = line.get(j);
+                if (f == null) f = "";
+                int gap1 = (int) Math.ceil(perpiece / 2f - f.length() / 2f);
+                int gap2 = (int) Math.floor(perpiece / 2f - f.length() / 2f);
+
+                // a number
+                for (int k = 0; k < gap1; k++) {
+                    System.out.print(" ");
+                }
+                System.out.print(f);
+                for (int k = 0; k < gap2; k++) {
+                    System.out.print(" ");
+                }
+            }
+            System.out.println();
+
+            perpiece /= 2;
+        }
     }
-
-    private static int findMaxOffset(TreeNode parent, int offset, boolean findLeft) {
-        if (parent != null) {
-            offset += parent.toString().length();
-        }
-        if (findLeft && parent.leftChild() != null) {
-            offset += 1;
-            return findMaxOffset(parent.leftChild(), offset, findLeft);
-        }
-        if (!findLeft && parent.rightChild() != null) {
-            return findMaxOffset(parent.rightChild(), offset, findLeft);
-        }
-        return offset;
-    }
-
 }
