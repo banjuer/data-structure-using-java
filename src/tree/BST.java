@@ -59,8 +59,10 @@ public class BST<E extends Comparable<E>> implements Tree<E> {
      * @return node
      */
     private Node add(Node node, E e) {
-        if (node == null)
+        if (node == null) {
+            size++;
             return new Node(e);
+        }
         if (e.compareTo(node.e) < 0)
             node.left = add(node.left, e);
         else if (e.compareTo(node.e) > 0)
@@ -70,7 +72,7 @@ public class BST<E extends Comparable<E>> implements Tree<E> {
 
     @Override
     public void delete(E e) {
-
+        // TODO
     }
 
     @Override
@@ -85,7 +87,7 @@ public class BST<E extends Comparable<E>> implements Tree<E> {
 
     @Override
     public boolean contains(E e) {
-        return false;
+        return contains(root, e);
     }
 
     /**
@@ -107,12 +109,25 @@ public class BST<E extends Comparable<E>> implements Tree<E> {
 
     @Override
     public E max() {
-        return null;
+        return max(root);
+    }
+
+    /**
+     * 查找树中最大元素
+     * @param node
+     * @return
+     */
+    private E max(Node node) {
+        return node.right == null ? node.e : max(node.right);
     }
 
     @Override
     public E min() {
-        return null;
+        return min(root);
+    }
+
+    private E min(Node node) {
+        return node.left == null ? node.e : min(node.left);
     }
 
     @Override
@@ -136,18 +151,39 @@ public class BST<E extends Comparable<E>> implements Tree<E> {
     }
 
     @Override
-    public void preorder(Queue queue) {
+    public void preorder(Queue<E> queue) {
+        preorder(root, queue);
+    }
 
+    private void preorder(Node node, Queue<E> queue) {
+        if (node == null) return;
+        queue.enqueue(node.e);
+        preorder(node.left, queue);
+        preorder(node.right, queue);
     }
 
     @Override
-    public void inorder(Queue queue) {
+    public void inorder(Queue<E> queue) {
+        inorder(root, queue);
+    }
 
+    private void inorder(Node node, Queue<E> queue) {
+        if (node == null) return;
+        inorder(node.left, queue);
+        queue.enqueue(node.e);
+        inorder(node.right, queue);
     }
 
     @Override
-    public void postorder(Queue queue) {
+    public void postorder(Queue<E> queue) {
+        postorder(root, queue);
+    }
 
+    private void postorder(Node node, Queue<E> queue) {
+        if (node == null) return;
+        postorder(node.left, queue);
+        postorder(node.right, queue);
+        queue.enqueue(node.e);
     }
 
     @Override

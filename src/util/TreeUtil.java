@@ -12,12 +12,11 @@ public class TreeUtil {
 
     /**
      * Print a tree
-     *
+     * make sure your console font is monospaced
      * @param root
      *            tree root node
      */
-    public static void print(VisibleNode root)
-    {
+    public static void print(VisibleNode root) {
         List<List<String>> lines = new ArrayList<>();
 
         List<VisibleNode> level = new ArrayList<>();
