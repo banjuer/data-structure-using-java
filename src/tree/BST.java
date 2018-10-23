@@ -85,37 +85,59 @@ public class BST<E extends Comparable<E>> implements Tree<E> {
         if (node == null) return null;
         if (e.compareTo(node.e) < 0) {
             node.left = delete(node.left, e);
+            return node;
         } else if (e.compareTo(node.e) > 0) {
             node.right = delete(node.right, e);
+            return node;
         } else {
-            // TODO
-            if (node.left == null && node.right == null) {
-                node = null;
-            } else if (node.left == null && node.right != null) {
-                node = node.right;
-            } else if (node.left != null && node.right == null) {
-                node = node.left;
-            } else {
-                Node cur = new Node(max(node.left).e);
-                deleteMax(node.left);
-                cur.left = node.left;
-                cur.right = node.right;
-                node = cur;
+            if (node.left == null) {
+                return getRightWithDel(node);
             }
-            size--;
+            if (node.right == null) {
+                return getLeftWithDel(node);
+            }
+            Node max = max(node.left);
+            max.left = deleteMax(max.left);
+            max.right = node.right;
+            node.left =  node.right = null;
+            return max;
         }
-        return node;
+    }
+
+
+    /**
+     * 删除当前节点返回右子树
+     * @param node
+     * @return
+     */
+    private Node getRightWithDel(Node node) {
+        Node right = node.right;
+        node.right = null;
+        size--;
+        return right;
+    }
+    /**
+     * 删除当前节点返回左子树
+     * @param node
+     * @return
+     */
+    private Node getLeftWithDel(Node node) {
+        Node left = node.left;
+        node.left = null;
+        size--;
+        return left;
     }
 
     /**
-     * 删除树中最大元素, 此处不维护size值, 由调用方维护
+     * 删除树中最大元素, 返回删除后的树
      * @param node
      */
-    private void deleteMax(Node node) {
-        while (node.right != null) {
-            node = node.right;
+    private  Node deleteMax(Node node) {
+        if (node.right == null) {
+            return getLeftWithDel(node);
         }
-        node = null;
+        node.right = deleteMax(node.right);
+        return node;
     }
 
     @Override
@@ -156,7 +178,7 @@ public class BST<E extends Comparable<E>> implements Tree<E> {
     }
 
     /**
-     * 查找树中最大元素
+     * 查找树中关键字最大节点
      * @param node
      * @return
      */
