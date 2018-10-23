@@ -2,7 +2,6 @@ package tree;
 
 import queue.LinkedQueue;
 import queue.Queue;
-import util.SysUtil;
 import util.TreeUtil;
 
 import java.util.Random;
@@ -26,6 +25,7 @@ public class BSTTest {
             bst.add(e);
         }
         TreeUtil.print(bst.root());
+        TreeUtil.simplePrint(bst.root());
         Queue<Integer> queue = new LinkedQueue<>();
 //        bst.preorder(queue);
         bst.inorder(queue);

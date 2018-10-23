@@ -72,7 +72,50 @@ public class BST<E extends Comparable<E>> implements Tree<E> {
 
     @Override
     public void delete(E e) {
-        // TODO
+        root = delete(root, e);
+    }
+
+    /**
+     * 删除树中节点返回删除后的树
+     * @param node
+     * @param e
+     * @return
+     */
+    public Node delete(Node node, E e) {
+        if (node == null) return null;
+        if (e.compareTo(node.e) < 0) {
+            node.left = delete(node.left, e);
+        } else if (e.compareTo(node.e) > 0) {
+            node.right = delete(node.right, e);
+        } else {
+            // TODO
+            if (node.left == null && node.right == null) {
+                node = null;
+            } else if (node.left == null && node.right != null) {
+                node = node.right;
+            } else if (node.left != null && node.right == null) {
+                node = node.left;
+            } else {
+                Node cur = new Node(max(node.left).e);
+                deleteMax(node.left);
+                cur.left = node.left;
+                cur.right = node.right;
+                node = cur;
+            }
+            size--;
+        }
+        return node;
+    }
+
+    /**
+     * 删除树中最大元素, 此处不维护size值, 由调用方维护
+     * @param node
+     */
+    private void deleteMax(Node node) {
+        while (node.right != null) {
+            node = node.right;
+        }
+        node = null;
     }
 
     @Override
@@ -109,7 +152,7 @@ public class BST<E extends Comparable<E>> implements Tree<E> {
 
     @Override
     public E max() {
-        return max(root);
+        return max(root).e;
     }
 
     /**
@@ -117,36 +160,40 @@ public class BST<E extends Comparable<E>> implements Tree<E> {
      * @param node
      * @return
      */
-    private E max(Node node) {
-        return node.right == null ? node.e : max(node.right);
+    private Node max(Node node) {
+        return node.right == null ? node : max(node.right);
     }
 
     @Override
     public E min() {
-        return min(root);
+        return min(root).e;
     }
 
-    private E min(Node node) {
-        return node.left == null ? node.e : min(node.left);
+    private Node min(Node node) {
+        return node.left == null ? node : min(node.left);
     }
 
     @Override
     public E floor(E e) {
+        // TODO
         return null;
     }
 
     @Override
     public E ceil(E e) {
+        // TODO
         return null;
     }
 
     @Override
     public E rank(E e) {
+        // TODO
         return null;
     }
 
     @Override
     public E select(int rank) {
+        // TODO
         return null;
     }
 
@@ -188,12 +235,12 @@ public class BST<E extends Comparable<E>> implements Tree<E> {
 
     @Override
     public void level(Queue queue) {
-
+        // TODO
     }
 
     @Override
     public void preorderStack(Queue queue) {
-
+        // TODO
     }
 
 }
