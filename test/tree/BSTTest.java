@@ -4,7 +4,6 @@ import queue.LinkedQueue;
 import queue.Queue;
 import util.TreeUtil;
 
-import java.util.Random;
 
 /**
  * @author : guochengsen
@@ -12,28 +11,42 @@ import java.util.Random;
  */
 public class BSTTest {
 
+    private static void mock(Queue<Integer> queue) {
+        queue.enqueue(428);
+        queue.enqueue(364);
+        queue.enqueue(565);
+        queue.enqueue(3);
+        queue.enqueue(420);
+        queue.enqueue(550);
+        queue.enqueue(629);
+        queue.enqueue(202);
+        queue.enqueue(811);
+        queue.enqueue(800);
+    }
 
-
-    public static void main(String[] args) throws InterruptedException {
-        Random random = new Random();
-        BST<Integer> bst = new BST<>();
-        int e;
-        for (int i = 0; i < 10; i++) {
-            Thread.sleep(1);
-            e = random.nextInt(1000);
-//            SysUtil.print(e);
-            bst.add(e);
+    public static void main(String[] args) {
+        Queue<Integer> mockQueue = new LinkedQueue<>();
+        mock(mockQueue);
+        Tree<Integer> bst = new BST<>();
+        while (!mockQueue.isEmpty()) {
+            bst.add(mockQueue.dequeue());
         }
         TreeUtil.print(bst.root());
-//        TreeUtil.simplePrint(bst.root());
-        Queue<Integer> queue = new LinkedQueue<>();
-//        bst.preorder(queue);
-        bst.inorder(queue);
-//        bst.postorder(queue);
 
-        System.out.println(queue);
-        System.out.println("max:" + bst.max());
-        System.out.println("min:" + bst.min());
+        Queue<Integer> orderQueue = new LinkedQueue<>();
+//        bst.preorder(orderQueue);
+        bst.inorder(orderQueue);
+//        bst.postorder(orderQueue);
+//        bst.levelorder(orderQueue);
+        System.out.println(orderQueue);
+
+        int t = 565;
+        System.out.println(t + "'s floor:" + bst.floor(t));
+        System.out.println(t + "'s ceil:" + bst.ceil(t));
+        System.out.println(bst.rank(t));
+//        bst.delete(629);
+//        TreeUtil.print(bst.root());
+
     }
 
 }

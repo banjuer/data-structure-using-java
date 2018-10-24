@@ -25,9 +25,7 @@ public interface Tree<E extends Comparable<E>> {
 
     void postorder(Queue<E> queue);
 
-    void level(Queue<E> queue);
-
-    void preorderStack(Queue<E> queue);
+    void levelorder(Queue<E> queue);
 
     E max();
 
@@ -37,7 +35,7 @@ public interface Tree<E extends Comparable<E>> {
 
     E ceil(E e);
 
-    E rank(E e);
+    int rank(E e);
 
     E select(int rank);
 }

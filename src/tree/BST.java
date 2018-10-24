@@ -1,5 +1,6 @@
 package tree;
 
+import queue.LinkedQueue;
 import queue.Queue;
 
 /**
@@ -10,13 +11,19 @@ public class BST<E extends Comparable<E>> implements Tree<E> {
 
     private Node root;
 
-    private int size;
-
     private class Node implements VisibleNode {
         E e;
         Node left;
         Node right;
+
+        /**
+         * 通过节点数N来快速实现rank, select:
+         * 1. 去掉size属性, size获取通过私有size(Node node)
+         * 2. 添加元素时, 更新探测的节点 N = size(node.right) + size(node.left)
+         */
+        int N;
         public Node(E e) {
+            this.N = 1;
             this.e = e;
         }
 
@@ -37,7 +44,7 @@ public class BST<E extends Comparable<E>> implements Tree<E> {
 
         @Override
         public String toString() {
-            return e.toString();
+            return e.toString() + ":" + N;
         }
 
     }
@@ -60,19 +67,24 @@ public class BST<E extends Comparable<E>> implements Tree<E> {
      */
     private Node add(Node node, E e) {
         if (node == null) {
-            size++;
             return new Node(e);
         }
         if (e.compareTo(node.e) < 0)
             node.left = add(node.left, e);
         else if (e.compareTo(node.e) > 0)
             node.right = add(node.right, e);
-        return node;
+        return resize(node);
     }
 
     @Override
     public void delete(E e) {
         root = delete(root, e);
+    }
+
+    private Node resize(Node node) {
+        if (node == null) return null;
+        node.N = size(node.right) + size(node.left) + 1;
+        return node;
     }
 
     /**
@@ -85,47 +97,21 @@ public class BST<E extends Comparable<E>> implements Tree<E> {
         if (node == null) return null;
         if (e.compareTo(node.e) < 0) {
             node.left = delete(node.left, e);
-            return node;
         } else if (e.compareTo(node.e) > 0) {
             node.right = delete(node.right, e);
-            return node;
         } else {
             if (node.left == null) {
-                return getRightWithDel(node);
+                return node.right;
             }
             if (node.right == null) {
-                return getLeftWithDel(node);
+                return node.left;
             }
-            Node max = max(node.left);
-            max.left = deleteMax(max.left);
-            max.right = node.right;
-            node.left =  node.right = null;
-            return max;
+            Node tmp = node;
+            node = max(node.left);
+            node.left = deleteMax(tmp.left);
+            node.right = tmp.right;
         }
-    }
-
-
-    /**
-     * 删除当前节点返回右子树
-     * @param node
-     * @return
-     */
-    private Node getRightWithDel(Node node) {
-        Node right = node.right;
-        node.right = null;
-        size--;
-        return right;
-    }
-    /**
-     * 删除当前节点返回左子树
-     * @param node
-     * @return
-     */
-    private Node getLeftWithDel(Node node) {
-        Node left = node.left;
-        node.left = null;
-        size--;
-        return left;
+        return resize(node);
     }
 
     /**
@@ -133,21 +119,29 @@ public class BST<E extends Comparable<E>> implements Tree<E> {
      * @param node
      */
     private  Node deleteMax(Node node) {
-        if (node.right == null) {
-            return getLeftWithDel(node);
+        if (node == null)
+            return null;
+        else if (node.right == null)
+            return node.left;
+        else {
+            node.right = deleteMax(node.right);
+            return resize(node);
         }
-        node.right = deleteMax(node.right);
-        return node;
     }
 
     @Override
     public int size() {
-        return size;
+        return size(root);
+    }
+
+    private int size(Node node) {
+        if (node == null) return 0;
+        return node.N;
     }
 
     @Override
     public boolean isEmpty() {
-        return size == 0;
+        return size() == 0;
     }
 
     @Override
@@ -174,6 +168,8 @@ public class BST<E extends Comparable<E>> implements Tree<E> {
 
     @Override
     public E max() {
+        if (isEmpty())
+            throw new IllegalArgumentException("bst is empty");
         return max(root).e;
     }
 
@@ -188,6 +184,8 @@ public class BST<E extends Comparable<E>> implements Tree<E> {
 
     @Override
     public E min() {
+        if (isEmpty())
+            throw new IllegalArgumentException("bst is empty");
         return min(root).e;
     }
 
@@ -197,20 +195,73 @@ public class BST<E extends Comparable<E>> implements Tree<E> {
 
     @Override
     public E floor(E e) {
-        // TODO
-        return null;
+        E min = min();
+        if (e.compareTo(min) < 0)
+            return null;
+        return floor(root, e).e;
+    }
+
+    /**
+     * 查找树中e元素前驱返回树
+     * @param node
+     * @param e
+     * @return
+     */
+    private Node floor(Node node, E e) {
+        if (node == null)
+            return null;
+        else if (e.compareTo(node.e) == 0)
+            return node;
+        else if (e.compareTo(node.e) < 0) {
+            return floor(node.left, e);
+        } else {
+            Node carry = floor(node.right, e);
+            return carry == null ? node : carry;
+        }
     }
 
     @Override
     public E ceil(E e) {
-        // TODO
-        return null;
+        if (e.compareTo(max()) > 0)
+            return null;
+        return ceil(root, e).e;
+    }
+
+    /**
+     * 树中查找e元素后继
+     * @param node
+     * @param e
+     * @return
+     */
+    private Node ceil(Node node, E e) {
+        if (node == null)
+            return null;
+        else if (e.compareTo(node.e) == 0)
+            return node;
+        else if (e.compareTo(node.e) > 0)
+            return ceil(node.right, e);
+        else {
+            Node carry = ceil(node.left, e);
+            return carry == null ? node : carry;
+        }
     }
 
     @Override
-    public E rank(E e) {
+    public int rank(E e) {
         // TODO
-        return null;
+        return rank(root, e);
+    }
+
+    private int rank(Node node, E e) {
+        if (node == null)
+            return 0;
+        int carry = e.compareTo(node.e);
+        if (carry < 0)
+           return rank(node.left, e);
+        else if (carry > 0)
+            return size(node) + rank(node.right, e);
+        else
+            return size(node.left);
     }
 
     @Override
@@ -256,13 +307,18 @@ public class BST<E extends Comparable<E>> implements Tree<E> {
     }
 
     @Override
-    public void level(Queue queue) {
-        // TODO
-    }
-
-    @Override
-    public void preorderStack(Queue queue) {
-        // TODO
+    public void levelorder(Queue<E> queue) {
+        Queue<Node> level = new LinkedQueue<>();
+        Node cur;
+        level.enqueue(root);
+        while (!level.isEmpty()) {
+            cur = level.dequeue();
+            queue.enqueue(cur.e);
+            if (cur.left != null)
+                level.enqueue(cur.left);
+            if (cur.right != null)
+                level.enqueue(cur.right);
+        }
     }
 
 }
