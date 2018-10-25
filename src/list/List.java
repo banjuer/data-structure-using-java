@@ -30,4 +30,6 @@ public interface List<E> {
 
     boolean isEmpty();
 
+    boolean contains(E e);
+
 }

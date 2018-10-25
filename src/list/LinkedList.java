@@ -198,6 +198,21 @@ public class LinkedList<E> implements List<E> {
     }
 
     @Override
+    public boolean contains(E e) {
+        if (size == 0)
+            throw new IllegalArgumentException("list is empty");
+        Node cur = dumyHead;
+        E data;
+        while (cur != null) {
+            data = cur.data;
+            if (e.equals(data))
+                return true;
+            cur = cur.next;
+        }
+        return false;
+    }
+
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(size);
         sb.append("LinkedList {data = [");

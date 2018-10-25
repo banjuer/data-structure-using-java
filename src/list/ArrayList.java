@@ -150,6 +150,17 @@ public class ArrayList<E> implements List<E> {
     }
 
     @Override
+    public boolean contains(E e) {
+        if (size == 0)
+            throw new IllegalArgumentException("list is empty");
+        for (int i = 0; i < size; i++) {
+            if (e.equals(data[i]))
+                return true;
+        }
+        return false;
+    }
+
+    @Override
     public String toString() {
         return "ArrayList{" +
                 "data=" + Arrays.toString(Arrays.copyOf(data, size)) +
