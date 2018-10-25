@@ -69,9 +69,10 @@ public class BST<E extends Comparable<E>> implements Tree<E> {
         if (node == null) {
             return new Node(e);
         }
-        if (e.compareTo(node.e) < 0)
+        int carry = e.compareTo(node.e);
+        if (carry < 0)
             node.left = add(node.left, e);
-        else if (e.compareTo(node.e) > 0)
+        else if (carry > 0)
             node.right = add(node.right, e);
         return resize(node);
     }
@@ -95,9 +96,10 @@ public class BST<E extends Comparable<E>> implements Tree<E> {
      */
     public Node delete(Node node, E e) {
         if (node == null) return null;
-        if (e.compareTo(node.e) < 0) {
+        int carry = e.compareTo(node.e);
+        if (carry < 0) {
             node.left = delete(node.left, e);
-        } else if (e.compareTo(node.e) > 0) {
+        } else if (carry > 0) {
             node.right = delete(node.right, e);
         } else {
             if (node.left == null) {
@@ -158,9 +160,10 @@ public class BST<E extends Comparable<E>> implements Tree<E> {
     private boolean contains(Node node, E e) {
         if (node == null)
             return false;
-        if (e.compareTo(node.e) < 0)
+        int carry = e.compareTo(node.e);
+        if (carry < 0)
             return contains(node.left, e);
-        else if (e.compareTo(node.e) > 0)
+        else if (carry > 0)
             return contains(node.right, e);
         else
             return true;
@@ -210,13 +213,14 @@ public class BST<E extends Comparable<E>> implements Tree<E> {
     private Node floor(Node node, E e) {
         if (node == null)
             return null;
-        else if (e.compareTo(node.e) == 0)
+        int carry = e.compareTo(node.e);
+        if (carry == 0)
             return node;
-        else if (e.compareTo(node.e) < 0) {
+        else if (carry < 0) {
             return floor(node.left, e);
         } else {
-            Node carry = floor(node.right, e);
-            return carry == null ? node : carry;
+            Node floor = floor(node.right, e);
+            return floor == null ? node : floor;
         }
     }
 
@@ -236,19 +240,19 @@ public class BST<E extends Comparable<E>> implements Tree<E> {
     private Node ceil(Node node, E e) {
         if (node == null)
             return null;
-        else if (e.compareTo(node.e) == 0)
+        int carry = e.compareTo(node.e);
+        if (carry == 0)
             return node;
-        else if (e.compareTo(node.e) > 0)
+        else if (carry > 0)
             return ceil(node.right, e);
         else {
-            Node carry = ceil(node.left, e);
-            return carry == null ? node : carry;
+            Node ceil = ceil(node.left, e);
+            return ceil == null ? node : ceil;
         }
     }
 
     @Override
     public int rank(E e) {
-        // TODO
         return rank(root, e);
     }
 
@@ -259,15 +263,31 @@ public class BST<E extends Comparable<E>> implements Tree<E> {
         if (carry < 0)
            return rank(node.left, e);
         else if (carry > 0)
-            return size(node) + rank(node.right, e);
+            return size(node.left) + rank(node.right, e) + 1;
         else
-            return size(node.left);
+            return size(node.left) + 1;
     }
 
     @Override
     public E select(int rank) {
-        // TODO
-        return null;
+        return select(root, rank).e;
+    }
+
+    private Node select(Node node, int rank) {
+        int carry = rank(node);
+        if (carry > rank)
+            return select(node.left, rank);
+        else if (carry < rank)
+            return select(node.right, rank - carry);
+        return node;
+    }
+
+    private int rank(Node node) {
+        if (node == null)
+            return 0;
+        if (node.left == null)
+            return 1;
+        return node.left.N + 1;
     }
 
     @Override

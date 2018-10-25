@@ -40,12 +40,13 @@ public class BSTTest {
 //        bst.levelorder(orderQueue);
         System.out.println(orderQueue);
 
-        int t = 565;
-        System.out.println(t + "'s floor:" + bst.floor(t));
-        System.out.println(t + "'s ceil:" + bst.ceil(t));
-        System.out.println(bst.rank(t));
+//        int t = 550;
+//        System.out.println(t + "'s floor:" + bst.floor(t));
+//        System.out.println(t + "'s ceil:" + bst.ceil(t));
+//        System.out.println(bst.rank(t));
 //        bst.delete(629);
 //        TreeUtil.print(bst.root());
+        System.out.println(bst.select(7));
 
     }
 
